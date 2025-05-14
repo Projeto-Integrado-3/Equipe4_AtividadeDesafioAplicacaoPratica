@@ -1392,10 +1392,10 @@ label {
 
 /* Footer */
 footer {
-    background: #34568B;
+    background: #324563;
     color: var(--light);
-    padding: 2rem 0;
-    margin-top: 2rem;
+    padding: 1rem 0;
+    margin-top: 1rem;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -1418,11 +1418,6 @@ footer {
     margin-bottom: 0.5rem;
 }
 
-.footer-university {
-    color: #ffffff;
-    font-weight: 500;
-    margin-bottom: 1rem;
-}
 
 .footer-right {
     display: flex;
@@ -1435,15 +1430,6 @@ footer {
     color: #F8F8FF;
 }
 
-.github-icon {
-    color: #ffffff;
-    font-size: 1.5rem;
-    transition: color 0.3s ease;
-}
-
-.github-icon:hover {
-    color: #4A90E2;
-}
 
 /* Estilos para exibição de imagens de espécies */
 

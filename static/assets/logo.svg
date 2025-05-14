@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 100 100"
+   width="100"
+   height="100"
+   version="1.1"
+   id="svg12"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="logo.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     id="namedview12"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="5.49"
+     inkscape:cx="50"
+     inkscape:cy="50"
+     inkscape:window-width="1135"
+     inkscape:window-height="745"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg12" />
+  <!-- Background Circle -->
+  <circle
+     cx="50"
+     cy="50"
+     r="45"
+     fill="#8e44ad"
+     fill-opacity="0.1"
+     id="circle1" />
+  <!-- Stem -->
+  <path
+     d="M 50,91.043219 V 60.049677"
+     stroke="#27ae60"
+     stroke-width="3.04927"
+     stroke-linecap="round"
+     id="path1" />
+  <path
+     d="M 54.173384,49.307603 Q 32.977911,48.440457 32.110765,69.635928 53.306239,70.50308 54.173384,49.307603"
+     fill="#8e44ad"
+     id="path18" />
+  <path
+     d="M 50.208848,84.653586 Q 67.299054,84.926849 67.587143,68.716175 50.496938,68.442911 50.208848,84.653586"
+     fill="#8e44ad"
+     id="path15"
+     style="stroke-width:0.784747;fill:#27ae60;fill-opacity:1" />
+  <!-- Leaves -->
+  <!-- 8 Petals (Purple) -->
+  <path
+     d="m 53.305388,58.058383 q 21.21019,0.35754 21.56773,-20.85265 -21.21019,-0.35754 -21.56773,20.85265"
+     fill="#8e44ad"
+     id="path5" />
+  <path
+     d="M 60.609372,22.853392 Q 41.733173,32.532705 51.412486,51.408904 70.288685,41.729591 60.609372,22.853392"
+     fill="#9b59b6"
+     id="path6" />
+  <path
+     d="M 46.731494,59.347301 Q 44.347301,38.268506 23.268506,40.652699 25.652699,61.731494 46.731494,59.347301"
+     fill="#8e44ad"
+     id="path7" />
+  <!-- 4 Additional Petals (Diagonal) -->
+  <!-- Center -->
+  <circle
+     cx="50"
+     cy="50"
+     r="10"
+     fill="#f1c40f"
+     id="circle11" />
+  <path
+     d="M 45.149375,51.789964 Q 52.035865,71.854267 72.100167,64.967777 65.213681,44.903471 45.149375,51.789964"
+     fill="#8e44ad"
+     id="path17" />
+  <path
+     d="m 32.922379,25.09316 q -3.521387,20.918887 17.3975,24.440274 3.521387,-20.918887 -17.3975,-24.440274"
+     fill="#9b59b6"
+     id="path12" />
+  <circle
+     cx="50"
+     cy="50"
+     r="10"
+     fill="#f1c40f"
+     id="circle14" />
+  <circle
+     cx="50"
+     cy="50.182148"
+     r="6"
+     fill="#f39c12"
+     id="circle15" />
+  <path
+     d="M 34.63907,71.385388 Q 33.812877,88.457799 50.005737,89.270347 50.831931,72.197937 34.63907,71.385388"
+     fill="#8e44ad"
+     id="path16"
+     style="fill:#27ae60;fill-opacity:1;stroke-width:0.784747" />
+</svg>

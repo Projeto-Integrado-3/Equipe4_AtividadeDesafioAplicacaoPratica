@@ -1,234 +1,251 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Classificador de Flores com KNN</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f2f2f2;
-      text-align: center;
-    }
-    .logo-container {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    h1, h2 {
-      color: #333;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px 0;
-      border: none;
-      cursor: pointer;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-    button:hover {
-      opacity: 0.8;
-    }
-    #testResults {
-      margin-top: 20px;
-      background: white;
-      padding: 15px;
-      border-radius: 4px;
-      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-      display: none;
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 800px;
-    }
-    #metrics p {
-      margin: 5px 0;
-    }
-    .form-group {
-      margin-bottom: 10px;
-    }
-    input[type="number"] {
-      padding: 5px;
-      width: 200px;
-      margin: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      text-align: center;
-    }
-    #resultadoPredict {
-      margin-top: 15px;
-      padding: 10px;
-      background: #e0ffe0;
-      border: 1px solid #00cc00;
-      border-radius: 4px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #006600;
-      display: none;
-    }
-    .graph {
-      margin-top: 15px;
-      max-width: 400px;
-    }
-    /* Spinner CSS */
-    #loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .spinner {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      border: 4px solid #007BFF;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    /* Container dos resultados, inicialmente oculto */
-    #resultsContent {
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificador de Flores Íris</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-  <!-- Logo da UFCA no topo -->
-  <div class="logo-container">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Logomarca_UFCA.svg" alt="Logo UFCA" width="200">
-  </div>
+    <!-- Header Section -->
+    <header>
+        <div class="container header-content">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='assets/logo.svg') }}" alt="Logo" class="logo">
+                <h1>Classificador de Íris</h1>
+            </div>
+            <div class="hamburger-menu" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#modelos" class="active">Modelos</a></li>
+                    <li><a href="#predicao">Predição</a></li>
+                    <li><a href="#comparacao">Comparação</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-  <h1>Classificador de Flores com KNN</h1>
-  <div>
-    <button id="btnTreinar" onclick="treinar()">Treino</button>
-    <button onclick="testar()">Teste</button>
-  </div>
-  <div>
-    <h2>Teste Novo Valor</h2>
-    <form id="formPredict">
-      <div class="form-group">
-        <input type="number" step="any" name="sepal_length" placeholder="Comprimento da Sépala (cm)" required>
-        <input type="number" step="any" name="sepal_width" placeholder="Largura da Sépala (cm)" required>
-      </div>
-      <div class="form-group">
-        <input type="number" step="any" name="petal_length" placeholder="Comprimento da Pétala (cm)" required>
-        <input type="number" step="any" name="petal_width" placeholder="Largura da Pétala (cm)" required>
-      </div>
-      <button type="submit">Enviar Valores</button>
-    </form>
-    <div id="resultadoPredict">Resultado da Predição: </div>
-  </div>
-  
-  <div id="testResults">
-    <h2>Resultados do Teste</h2>
-    <div id="loading">
-      <div class="spinner"></div>
-      <span>Carregando resultados...</span>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-container hidden">
+        <div class="spinner-border" role="status">
+        </div>
+        <p id="loading-text">Processando...</p>
     </div>
-    <div id="resultsContent">
-      <div id="metrics"></div>
-      <div>
-        <h3>Matriz de Confusão</h3>
-        <img id="cmImage" class="graph" src="" alt="Matriz de Confusão">
-      </div>
-      <div>
-        <h3>Superfície de Decisão</h3>
-        <img id="dsImage" class="graph" src="" alt="Superfície de Decisão">
-      </div>
-    </div>
-  </div>
-  
-  <script>
-    function treinar() {
-      document.getElementById('btnTreinar').disabled = true;
-      fetch('/train', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({dataset: "iris"})
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert(data.message);
-        document.getElementById('btnTreinar').style.backgroundColor = "green";
-        document.getElementById('btnTreinar').disabled = false;
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-        document.getElementById('btnTreinar').disabled = false;
-      });
-    }
 
-    function testar() {
-      const testResultsDiv = document.getElementById('testResults');
-      testResultsDiv.style.display = "block";
-      document.getElementById('loading').style.display = "flex";
-      document.getElementById('resultsContent').style.display = "none";
-      
-      fetch('/test')
-      .then(response => response.json())
-      .then(data => {
-        let testAcc = (data.test_metrics.accuracy * 100).toFixed(1);
-        let testPrec = (data.test_metrics.precision * 100).toFixed(1);
-        let testRec = (data.test_metrics.recall * 100).toFixed(1);
-        
-        let trainAcc = (data.train_metrics.accuracy * 100).toFixed(1);
-        let trainPrec = (data.train_metrics.precision * 100).toFixed(1);
-        let trainRec = (data.train_metrics.recall * 100).toFixed(1);
-        
-        let metricsHTML = `
-         <h3>Métricas de Treinamento</h3>
-          <p>Acurácia: ${trainAcc}%</p>
-          <p>Precisão: ${trainPrec}%</p>
-          <p>Recall: ${trainRec}%</p>
-          <hr>
-          <h3>Métricas de Teste</h3>
-          <p>Acurácia: ${testAcc}%</p>
-          <p>Precisão: ${testPrec}%</p>
-          <p>Recall: ${testRec}%</p>
-          <hr>
-          <h1>Gráficos de Teste</h1>
-        `;
-        
-        document.getElementById('metrics').innerHTML = metricsHTML;
-        document.getElementById('cmImage').src = "data:image/png;base64," + data.confusion_matrix;
-        document.getElementById('dsImage').src = "data:image/png;base64," + data.decision_surface;
-        
-        document.getElementById('loading').style.display = "none";
-        document.getElementById('resultsContent').style.display = "block";
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-        document.getElementById('loading').innerText = "Erro ao carregar resultados.";
-      });
-    }
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Classificador de Flores Íris</h2>
+            <p>Uma aplicação de aprendizado de máquina para classificação de espécies de íris</p>
+            <div class="hero-buttons">
+                <button id="btn-start" class="btn btn-secondary">Começar</button>
+                <button id="btn-about" class="btn btn-outline">Saiba Mais</button>
+            </div>
+        </div>
+    </section>
 
-    document.getElementById('formPredict').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const data = {
-        sepal_length: parseFloat(formData.get('sepal_length')),
-        sepal_width: parseFloat(formData.get('sepal_width')),
-        petal_length: parseFloat(formData.get('petal_length')),
-        petal_width: parseFloat(formData.get('petal_width'))
-      };
-      
-      fetch('/predict', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(result => {
-        const resultadoDiv = document.getElementById('resultadoPredict');
-        resultadoDiv.innerText = "Resultado da Predição: " + result.predicao;
-        resultadoDiv.style.display = "block";
-      })
-      .catch(error => console.error('Erro:', error));
-    });
-  </script>
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Sections Container -->
+        <div class="sections-grid">
+            <!-- Modelos Section -->
+            <section id="modelos">
+            <h2 class="section-title">Modelos de Aprendizado de Máquina</h2>
+            <div class="card">
+                <h3>Treinar Modelos</h3>
+                <p>Selecione um modelo para treinar ou treine todos simultaneamente</p>
+                
+                <div class="row" style="margin-top: 20px;">
+                    <button id="btn-train-knn" class="btn-model btn-model-knn">
+                        <i class="fas fa-chart-scatter"></i> Treinar KNN
+                    </button>
+                    <button id="btn-train-dt" class="btn-model btn-model-dt">
+                        <i class="fas fa-sitemap"></i> Treinar Árvore de Decisão
+                    </button>
+                    <button id="btn-train-rf" class="btn-model btn-model-rf">
+                        <i class="fas fa-tree"></i> Treinar Random Forest
+                    </button>
+                    <button id="btn-train-svm" class="btn-model btn-model-svm">
+                        <i class="fas fa-project-diagram"></i> Treinar SVM
+                    </button>
+                    <button id="btn-train-all" class="btn-model btn-model-all">
+                        <i class="fas fa-play-circle"></i> Treinar Todos
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Testar Modelos</h3>
+                <p>Avalie o desempenho dos modelos treinados</p>
+                
+                <div class="model-buttons-row" style="margin-top: 20px;">
+                    <button id="btn-test-knn" class="btn-model btn-knn">
+                        <i class="fas fa-vial"></i> Testar KNN
+                    </button>
+                    <button id="btn-test-dt" class="btn-model btn-decision-tree">
+                        <i class="fas fa-vial"></i> Testar Árvore de Decisão
+                    </button>
+                    <button id="btn-test-rf" class="btn-model btn-random-forest">
+                        <i class="fas fa-vial"></i> Testar Random Forest
+                    </button>
+                    <button id="btn-test-svm" class="btn-model btn-svm">
+                        <i class="fas fa-vial"></i> Testar SVM
+                    </button>
+                </div>
+                
+                <div id="model-results" class="hidden">
+                    <!--Os resultados serão inseridos aqui via JavaScript-->
+                </div>
+            </div>
+        </section>
+
+        <!-- Predição -->
+        <section id="predicao">
+            <h2 class="section-title">Predição de Nova Amostra</h2>
+            <div class="card prediction-card">
+                <div class="prediction-container">
+                    <div class="prediction-left">
+                        <h3>Características da Flor</h3>
+                        <p class="subtitle">Digite as medidas em centímetros</p>
+                        
+                        <form id="prediction-form" class="prediction-form">
+                            <div class="form-group">
+                                <label for="sepal_length">Comprimento da Sépala</label>
+                                <input type="text" class="form-control" id="sepal_length" placeholder="Ex: 5.1" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sepal_width">Largura da Sépala</label>
+                                <input type="text" class="form-control" id="sepal_width" placeholder="Ex: 3.5" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="petal_length">Comprimento da Pétala</label>
+                                <input type="text" class="form-control" id="petal_length" placeholder="Ex: 1.4" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="petal_width">Largura da Pétala</label>
+                                <input type="text" class="form-control" id="petal_width" placeholder="Ex: 0.2" required>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="prediction-right">
+                        <h3>Modelo a Utilizar</h3>
+                        <p class="subtitle">Selecione o modelo para a predição</p>
+                        
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="model-knn" name="model" value="knn" checked>
+                                <label for="model-knn">KNN</label>
+                            </div>
+                            
+                            <div class="radio-option">
+                                <input type="radio" id="model-dt" name="model" value="decision_tree">
+                                <label for="model-dt">Árvore de Decisão</label>
+                            </div>
+                            
+                            <div class="radio-option">
+                                <input type="radio" id="model-rf" name="model" value="random_forest">
+                                <label for="model-rf">Random Forest</label>
+                            </div>
+                            
+                            <div class="radio-option">
+                                <input type="radio" id="model-svm" name="model" value="svm">
+                                <label for="model-svm">SVM</label>
+                            </div>
+                        </div>
+                        
+                        <button id="btn-predict" class="btn-classify">
+                            <i class="fas fa-search"></i> Classificar Flor
+                        </button>
+                    </div>
+                </div>
+                <div id="prediction-result" class="prediction-result-box hidden">
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparação -->
+        <section id="comparacao">
+            <h2 class="section-title">Comparação de Modelos</h2>
+            <div class="card">
+                <p class="text-center">Compare o desempenho dos diferentes algoritmos treinados</p>
+                
+                <div class="text-center" style="margin-top: 30px; margin-bottom: 30px;">
+                    <button id="btn-compare-all" class="btn-compare btn-lg">
+                        <i class="fas fa-chart-bar"></i> Comparar Todos os Modelos
+                    </button>
+                </div>
+                
+                <div id="comparison-results" class="comparison-results hidden">
+                </div>
+            </div>
+        </section>
+
+        <!-- Saiba Mais -->
+        <section id="about">
+            <h2 class="section-title">Sobre o Projeto</h2>
+            <div class="card">
+                <div class="row">
+                    <div class="col-half">
+                        <h3>Classificador de Flores Íris</h3>
+                        <p>Esta aplicação é um exemplo de aprendizado de máquina aplicado à classificação de espécies de flores íris, utilizando o famoso conjunto de dados Iris introduzido por Ronald Fisher em 1936.</p>
+                        
+                        <p>O projeto implementa e compara diversos algoritmos de classificação:</p>
+                        <ul>
+                            <li><strong>KNN (K-Nearest Neighbors):</strong> Classifica com base na proximidade com outros exemplos.</li>
+                            <li><strong>Árvore de Decisão:</strong> Constrói um modelo de decisão baseado em regras.</li>
+                            <li><strong>Random Forest:</strong> Utiliza conjunto de árvores de decisão para melhorar a precisão.</li>
+                            <li><strong>SVM (Support Vector Machine):</strong> Separa os dados usando hiperplanos otimizados.</li>
+                        </ul>
+                        
+                        <p>Este projeto foi desenvolvido como parte da disciplina de Aprendizagem de Máquina do curso de Análise e Desenvolvimento de Sistemas.</p>
+                        
+                    
+                    <div class="col-half">
+                        <h3>Dataset Iris</h3>
+                        <p>O dataset contém 150 amostras de flores íris, com as seguintes características:</p>
+                        <ul>
+                            <li>Comprimento da sépala (cm)</li>
+                            <li>Largura da sépala (cm)</li>
+                            <li>Comprimento da pétala (cm)</li>
+                            <li>Largura da pétala (cm)</li>
+                        </ul>
+                        
+                        <p>Cada amostra pertence a uma das três espécies:</p>
+                        <ul>
+                            <li>Setosa</li>
+                            <li>Versicolor</li>
+                            <li>Virginica</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <img src="{{ url_for('static', filename='assets/ufca-logo.svg') }}" alt="Logo UFCA" style="height: 80px; margin-bottom: 15px;">
+            <div class="footer-title">Todos os Direitos Reservados</div>
+            <div class="footer-right">
+                <div class="footer-year">Desenvolvido em 2025</div>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
